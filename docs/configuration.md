@@ -58,6 +58,11 @@ pages:
               - asmongold
               - jembawls
 
+          - type: huya-channels
+            channels:
+              - 211888
+
+
       - size: full
         widgets:
           - type: hacker-news

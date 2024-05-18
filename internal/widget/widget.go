@@ -43,6 +43,8 @@ func New(widgetType string) (Widget, error) {
 		return &TwitchGames{}, nil
 	case "twitch-channels":
 		return &TwitchChannels{}, nil
+	case "huya-channels":
+		return &HuyaChannels{}, nil
 	case "repository":
 		return &Repository{}, nil
 	default:

@@ -114,6 +114,42 @@ func decodeXmlFromRequestTask[T any](client RequestDoer) func(*http.Request) (T,
 	}
 }
 
+func textFromRequest(client RequestDoer, request *http.Request) (string, error) {
+	response, err := client.Do(request)
+	var result string
+
+	if err != nil {
+		return result, err
+	}
+
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return result, err
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return result, fmt.Errorf(
+			"unexpected status code %d for %s, response: %s",
+			response.StatusCode,
+			request.URL,
+			truncateString(string(body), 256),
+		)
+	}
+
+	result = string(body)
+
+	return result, nil
+}
+
+func textFromRequestTask(client RequestDoer) func(*http.Request) (string, error) {
+	return func(request *http.Request) (string, error) {
+		return textFromRequest(client, request)
+	}
+}
+
 type workerPoolTask[I any, O any] struct {
 	index  int
 	input  I
